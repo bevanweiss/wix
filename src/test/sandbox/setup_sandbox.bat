@@ -9,8 +9,10 @@ REM if not exist VSTest (mkdir VSTest)
 @echo on
 REM curl -L0 https://aka.ms/dotnet/%DOTNET_VERSION%/dotnet-runtime-win-x64.zip --output ".\AMD64\dotnet-runtime.zip"
 curl -L0 https://aka.ms/dotnet/%DOTNET_VERSION%/dotnet-sdk-win-x64.zip --output ".\AMD64\dotnet-sdk.zip"
+curl -L0 https://aka.ms/dotnet/%DOTNET_VERSION%/dotnet-sdk-win-x64.exe --output ".\AMD64\dotnet-sdk.exe"
 REM curl -L0 https://aka.ms/dotnet/%DOTNET_VERSION%/dotnet-runtime-win-arm64.zip --output ".\ARM64\dotnet-runtime.zip"
 curl -L0 https://aka.ms/dotnet/%DOTNET_VERSION%/dotnet-sdk-win-arm64.zip --output ".\ARM64\dotnet-sdk.zip"
+curl -L0 https://aka.ms/dotnet/%DOTNET_VERSION%/dotnet-sdk-win-arm64.exe --output ".\ARM64\dotnet-sdk.exe"
 @echo off
 
 REM curl -L0 https://aka.ms/vs/17/release/RemoteTools.amd64ret.enu.exe --output ".\AMD64\RemoteTools.exe"
