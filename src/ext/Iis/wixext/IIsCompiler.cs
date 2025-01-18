@@ -55,6 +55,24 @@ namespace WixToolset.Iis
         }
 
         /// <summary>
+        /// Web Directory Browse Flags.
+        /// </summary>
+        /// <remarks>Note that this must be kept in sync with the eWebDirBrowseFlags in scawebprop.h.</remarks>
+        [Flags]
+        public enum WebDirAttributes : int
+        {
+            DirBrowseShowDate       = 1,
+            DirBrowseShowExtension  = 2,
+            DirBrowseShowLongDate   = 4,
+            DirBrowseShowSize       = 8,
+            DirBrowseShowTime       = 16,
+            EnableDefaultDoc        = 32,
+            EnableDirBrowsing       = 64,
+
+            Reserved                = int.MinValue, // 1 << 31
+        }
+
+        /// <summary>
         /// Processes an element for the Compiler.
         /// </summary>
         /// <param name="sourceLineNumbers">Source line number for the parent element.</param>
@@ -1336,6 +1354,8 @@ namespace WixToolset.Iis
             var accessSet = false;
             int accessSSLFlags = 0;
             var accessSSLFlagsSet = false;
+            WebDirAttributes attributes = 0;
+            var dirBrowseFlagsSet = false;
             string anonymousUser = null;
             var aspDetailedError = YesNoType.NotSet;
             string authenticationProviders = null;
@@ -1497,6 +1517,57 @@ namespace WixToolset.Iis
                             accessSSLFlagsSet = true;
                             break;
 
+                        // DirBrowse attributes
+                        case "DirBrowseShowDate":
+                            if (YesNoType.No == this.ParseHelper.GetAttributeYesNoValue(sourceLineNumbers, attrib))
+                            {
+                                attributes |=  WebDirAttributes.DirBrowseShowDate;
+                                dirBrowseFlagsSet = true;
+                            }
+                            break;
+                        case "DirBrowseShowExtension":
+                            if (YesNoType.No == this.ParseHelper.GetAttributeYesNoValue(sourceLineNumbers, attrib))
+                            {
+                                attributes |= WebDirAttributes.DirBrowseShowExtension;
+                                dirBrowseFlagsSet = true;
+                            }
+                            break;
+                        case "DirBrowseShowLongDate":
+                            if (YesNoType.Yes == this.ParseHelper.GetAttributeYesNoValue(sourceLineNumbers, attrib))
+                            {
+                                attributes |= WebDirAttributes.DirBrowseShowLongDate;
+                                dirBrowseFlagsSet = true;
+                            }
+                            break;
+                        case "DirBrowseShowSize":
+                            if (YesNoType.No == this.ParseHelper.GetAttributeYesNoValue(sourceLineNumbers, attrib))
+                            {
+                                attributes |= WebDirAttributes.DirBrowseShowSize;
+                                dirBrowseFlagsSet = true;
+                            }
+                            break;
+                        case "DirBrowseShowTime":
+                            if (YesNoType.No == this.ParseHelper.GetAttributeYesNoValue(sourceLineNumbers, attrib))
+                            {
+                                attributes |= WebDirAttributes.DirBrowseShowTime;
+                                dirBrowseFlagsSet = true;
+                            }
+                            break;
+                        case "EnableDefaultDoc":
+                            if (YesNoType.No == this.ParseHelper.GetAttributeYesNoValue(sourceLineNumbers, attrib))
+                            {
+                                attributes |= WebDirAttributes.EnableDefaultDoc;
+                                dirBrowseFlagsSet = true;
+                            }
+                            break;
+                        case "EnableDirBrowsing":
+                            if (YesNoType.Yes == this.ParseHelper.GetAttributeYesNoValue(sourceLineNumbers, attrib))
+                            {
+                                attributes |= WebDirAttributes.EnableDirBrowsing;
+                                dirBrowseFlagsSet = true;
+                            }
+                            break;
+
                         // Authorization attributes
                         case "AnonymousAccess":
                             if (YesNoType.Yes == this.ParseHelper.GetAttributeYesNoValue(sourceLineNumbers, attrib))
@@ -1633,6 +1704,11 @@ namespace WixToolset.Iis
                 if (null != authenticationProviders)
                 {
                     symbol.AuthenticationProviders = authenticationProviders;
+                }
+
+                if (dirBrowseFlagsSet)
+                {
+                    symbol.Attributes = (int)attributes;
                 }
             }
 
